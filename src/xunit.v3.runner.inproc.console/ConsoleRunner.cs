@@ -379,7 +379,6 @@ namespace Xunit.Runner.InProc.SystemConsole
 		async ValueTask ListProject(XunitProject project)
 		{
 			var (listOption, listFormat) = project.Configuration.List!.Value;
-			var nullMessageSink = new _NullMessageSink();
 			var testCasesByAssembly = new Dictionary<string, List<_TestCaseDiscovered>>();
 
 			foreach (var assembly in project.Assemblies)
@@ -397,7 +396,7 @@ namespace Xunit.Runner.InProc.SystemConsole
 				var assemblyInfo = new ReflectionAssemblyInfo(testAssembly);
 
 				await using var disposalTracker = new DisposalTracker();
-				var testFramework = ExtensibilityPointFactory.GetTestFramework(nullMessageSink, assemblyInfo);
+				var testFramework = ExtensibilityPointFactory.GetTestFramework(_NullMessageSink.Instance, assemblyInfo);
 				disposalTracker.Add(testFramework);
 
 				var discoverySink = new TestDiscoverySink(() => cancel);

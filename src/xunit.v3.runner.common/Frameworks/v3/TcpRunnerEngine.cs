@@ -255,6 +255,10 @@ namespace Xunit.Runner.v3
 				});
 
 				bufferedClient = new BufferedTcpClient($"runner::{EngineID}", socket, ProcessRequest, DiagnosticMessageSink);
+				bufferedClient.OnAbnormalTermination = ex =>
+				{
+					messageDispatcher("::BROADCAST::", _ErrorMessage.FromException(ex));
+				};
 				bufferedClient.Start();
 
 				DisposalTracker.AddAsyncAction(() =>

@@ -51,6 +51,12 @@ namespace Xunit.Runner.v3
 			this.diagnosticMessageSink = Guard.ArgumentNotNull(nameof(diagnosticMessageSink), diagnosticMessageSink);
 		}
 
+		/// <summary>
+		/// Indicates that the connection has abnormally terminated, and it should be assumed that the remote
+		/// program has crashed or severely faulted.
+		/// </summary>
+		public Action<Exception>? OnAbnormalTermination;
+
 		/// <inheritdoc/>
 		public async ValueTask DisposeAsync()
 		{
@@ -138,6 +144,7 @@ namespace Xunit.Runner.v3
 			catch (Exception ex)
 			{
 				diagnosticMessageSink.OnMessage(new _DiagnosticMessage { Message = $"BufferTcpClient({clientID}): abnormal termination of pipe reader: {ex}" });
+				OnAbnormalTermination?.Invoke(ex);
 			}
 		}
 

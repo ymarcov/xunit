@@ -128,6 +128,14 @@ namespace Xunit.Runner.v3
 
 		bool OnMessage(string operationID, _MessageSinkMessage message)
 		{
+			if (operationID == "::BROADCAST::")
+			{
+				foreach (var operationSink in operations.Values)
+					operationSink.OnMessage(message);
+
+				return true;
+			}
+
 			if (operations.TryGetValue(operationID, out var messageSink))
 				return messageSink.OnMessage(message);
 
